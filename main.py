@@ -138,8 +138,12 @@ def generer_deplacements_possibles(pion):
         y = pion[1] + dy
         if 0 <= x < NOMBRE_CASES and 0 <= y < NOMBRE_CASES:
             if (x, y, 3 - pion[2]) in pions:
-                if 0 <= x+dx < NOMBRE_CASES and 0 <= y+dy < NOMBRE_CASES and (x+dx, y+dy) not in pions:
-                    deplacements_obligatoires.append((x+dx, y+dy))
+                if 0 <= x+dx < NOMBRE_CASES and 0 <= y+dy < NOMBRE_CASES:
+                    # Vérifie si le pion adverse est protégé par un autre pion adverse
+                    if (x+dx, y+dy, 3 - pion[2]) in pions:
+                        continue
+                    elif (x+dx, y+dy) not in pions:
+                        deplacements_obligatoires.append((x+dx, y+dy))
                 continue
             if (x, y, pion[2]) in pions:
                 continue
