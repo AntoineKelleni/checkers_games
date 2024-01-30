@@ -61,9 +61,15 @@ pion_selectionne = None
 # Ajout d'une variable pour le tour
 tour = 1
 
+# Ajout d'une variable pour le pion qui a joué
+pion_a_joue = None
+
+# Ajout d'une variable pour le pion qui a mangé
+pion_a_mange = None
+
 # Fonction pour gérer les clics de la souris
 def gerer_clic(x, y):
-    global pion_selectionne, tour
+    global pion_selectionne, tour, pion_a_mange
     if pion_selectionne:
         deplacements_possibles = generer_deplacements_possibles(pion_selectionne)
         if (x, y) in deplacements_possibles:
@@ -75,22 +81,25 @@ def gerer_clic(x, y):
                 y_mange = (pion_selectionne[1] + y) // 2
                 pion_mange = next(pion for pion in pions if pion[0] == x_mange and pion[1] == y_mange)
                 pions.remove(pion_mange)
-            else:
-                # Si aucun saut n'a eu lieu, passer au tour du joueur suivant
-                tour = 3 - tour
+                # Mettre à jour pion_a_mange
+                pion_a_mange = pion_selectionne
+                # Vérifiez s'il y a d'autres mouvements obligatoires pour le pion qui vient de bouger
+                deplacements_possibles = generer_deplacements_possibles((x, y, pion_selectionne[2]))
+                if any(abs(x - dx) > 1 for dx, dy in deplacements_possibles):
+                    # Si c'est le cas, ne changez pas le tour et sélectionnez le pion qui vient de bouger
+                    pion_selectionne = (x, y, pion_selectionne[2])
+                    return
+            # Si aucun saut n'a eu lieu, passer au tour du joueur suivant
+            tour = 3 - tour
             pion_selectionne = None
         else:
-            for pion in pions:
-                if pion[0] == x and pion[1] == y:
-                    pion_selectionne = pion
-                    return
+            pion_selectionne = None
     else:
         for pion in pions:
             if pion[0] == x and pion[1] == y and pion[2] == tour:
                 pion_selectionne = pion
                 return
-
-
+            
 # Fonction pour vérifier si un mouvement est valide
 def est_mouvement_valide(pion, x, y):
     global pions, tour
