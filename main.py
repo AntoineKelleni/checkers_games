@@ -41,8 +41,8 @@ tour_joueur = JOUEUR_ROUGE
 
 # Fonction pour dessiner le tour du joueur
 def dessiner_tour_joueur():
-    texte = font.render('Tour du : ' + ('Rouge' if tour == 1 else 'Bleu'), True, (255, 255, 0))
-    fenetre.blit(texte, (10, 30))
+    texte = font.render(' Tour      ' + ('Rouge' if tour == 1 else 'Bleu'), True, (255, 255, 0))
+    fenetre.blit(texte, (15, 30))
 
 def fin_de_tour():
     global tour_joueur
