@@ -1,18 +1,16 @@
 import pygame
 import sys
 
-# Constantes pour la taille du plateau et des cases
+# Constantes taille du plateau et cases
 TAILLE_CASE = 80
 NOMBRE_CASES = 10
-
-# Constantes pour les couleurs
+# Constantes couleurs
 BLANC = (255, 255, 255)
 NOIR = (0, 0, 0)
 ROUGE = (255, 0, 0)
 BLEU = (0, 0, 255)
 VERT = (0, 255, 0)
 
-# Initialisation de Pygame
 pygame.init()
 
 # Création de la fenêtre
@@ -31,6 +29,26 @@ def dessiner_pions(pions):
     for pion in pions:
         pygame.draw.circle(fenetre, ROUGE if pion[2] == 1 else BLEU, (pion[0] * TAILLE_CASE + TAILLE_CASE // 2, pion[1] * TAILLE_CASE + TAILLE_CASE // 2), TAILLE_CASE // 2 - 10)
 
+# Constantes pour les joueurs
+JOUEUR_ROUGE = 1
+JOUEUR_BLEU = 2
+
+# Initialisation de la police de caractères
+font = pygame.font.Font(None, 28)
+
+# Variable pour le tour du joueur
+tour_joueur = JOUEUR_ROUGE
+
+# Fonction pour dessiner le tour du joueur
+def dessiner_tour_joueur():
+    texte = font.render('Tour du : ' + ('Rouge' if tour == 1 else 'Bleu'), True, (255, 255, 0))
+    fenetre.blit(texte, (10, 30))
+
+def fin_de_tour():
+    global tour_joueur
+    tour_joueur = JOUEUR_BLEU if tour_joueur == JOUEUR_ROUGE else JOUEUR_ROUGE
+
+
 # Fonction pour calculer les déplacements possibles d'un pion
 def generer_deplacements_possibles(pion):
     deplacements = []
@@ -41,7 +59,7 @@ def generer_deplacements_possibles(pion):
         y = pion[1] + dy
         if 0 <= x < NOMBRE_CASES and 0 <= y < NOMBRE_CASES:
             if (x, y, 3 - pion[2]) in pions:
-                if 0 <= x+dx < NOMBRE_CASES and 0 <= y+dy < NOMBRE_CASES and (x+dx, y+dy) not in [(p[0], p[1]) for p in pions]:
+                if 0 <= x+dx < NOMBRE_CASES and 0 <= y+dy < NOMBRE_CASES and (x+dx, y+dy) not in [(p[0], p[1]) for p in pions] and (x+dx, y+dy, pion[2]) not in pions:
                     deplacements_obligatoires.append((x+dx, y+dy))
                 continue
             if (x, y, pion[2]) in pions:
@@ -168,6 +186,8 @@ def dessiner_deplacements_possibles(deplacements):
     for x, y in deplacements:
         pygame.draw.circle(fenetre, VERT, (x * TAILLE_CASE + TAILLE_CASE // 2, y * TAILLE_CASE + TAILLE_CASE // 2), TAILLE_CASE // 2 - 10)
 
+
+
 # Boucle principale du jeu
 while True:
     for event in pygame.event.get():
@@ -185,5 +205,7 @@ while True:
     dessiner_pions(pions)
     if pion_selectionne is not None:
         dessiner_deplacements_possibles(generer_deplacements_possibles(pion_selectionne))
+    dessiner_tour_joueur()
+
 
     pygame.display.flip()
