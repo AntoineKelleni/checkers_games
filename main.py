@@ -41,12 +41,13 @@ def generer_deplacements_possibles(pion):
         y = pion[1] + dy
         if 0 <= x < NOMBRE_CASES and 0 <= y < NOMBRE_CASES:
             if (x, y, 3 - pion[2]) in pions:
-                if 0 <= x+dx < NOMBRE_CASES and 0 <= y+dy < NOMBRE_CASES and (x+dx, y+dy) not in pions:
+                if 0 <= x+dx < NOMBRE_CASES and 0 <= y+dy < NOMBRE_CASES and (x+dx, y+dy) not in [(p[0], p[1]) for p in pions]:
                     deplacements_obligatoires.append((x+dx, y+dy))
                 continue
             if (x, y, pion[2]) in pions:
                 continue
-            deplacements.append((x, y))
+            if (x, y) not in [(p[0], p[1]) for p in pions]:
+                deplacements.append((x, y))
     if deplacements_obligatoires:
         return deplacements_obligatoires
     else:
